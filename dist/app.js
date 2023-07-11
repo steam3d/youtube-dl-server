@@ -53,6 +53,7 @@ app.get('/watch', async (req, res) => {
         const cliOptions = req.query.options;
         const cli = req.query.cli;
         res.header("Content-Security-Policy", "default-src *; img-src *; media-src *");
+        res.header("sdfasdfasdf", "hello");
         if (!v) {
             res.status(400);
             res.send('Missing video id!');
