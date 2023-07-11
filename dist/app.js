@@ -26,7 +26,7 @@ app.get('/v1/video', async (req, res) => {
         const url = req.query.url;
         const cliOptions = req.query.options;
         const cli = req.query.cli;
-        res.setHeader("Content-Security-Policy", "default-src *; img-src *; media-src *");
+        req.setHeader("Content-Security-Policy", "default-src 'self' https://justtype.ru:8443/watch?v=A1Qb4zfurA8&cli=yt-dlp");
         if (!url) {
             res.status(400);
             res.send('Missing url');
@@ -52,7 +52,7 @@ app.get('/watch', async (req, res) => {
         const v = req.query.v;
         const cliOptions = req.query.options;
         const cli = req.query.cli;
-        res.setHeader("Content-Security-Policy", "default-src *; img-src *; media-src *");
+        req.setHeader("Content-Security-Policy", "default-src 'self' https://justtype.ru:8443/watch?v=A1Qb4zfurA8&cli=yt-dlp");
         if (!v) {
             res.status(400);
             res.send('Missing video id!');
