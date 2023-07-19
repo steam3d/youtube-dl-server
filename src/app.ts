@@ -3,6 +3,7 @@
 import express from 'express';
 const cors = require('cors');
 const compression = require('compression')
+const axios = require('axios')
 
 import {YoutubeDl} from "./YoutubeDl";
 
@@ -54,6 +55,32 @@ app.get('/watch', async (req, res) => {
         }
         let metadata = await YoutubeDl.getVideoMetadata(v, {cli, cliOptions}, ['url']);
         res.redirect(metadata.url);
+    } catch (e) {
+        console.error(e)
+        res.status(500);
+        res.send(e);
+    }
+});
+
+app.get('/proxy', async (req, res) => {
+    try {
+        const v = req.query.v as string;
+        const cliOptions = req.query.options as string;
+        const cli = req.query.cli as "youtube-dl" | "yt-dlp";
+        if(!v){
+            res.status(400);
+            res.send('Missing video id!');
+            return;
+        }
+        if (cli && cli !== "youtube-dl" && cli !== "yt-dlp"){
+            res.status(400);
+            res.send('Unsupported cli. valid options: youtube-dl | yt-dlp');
+            return;
+        }
+        let metadata = await YoutubeDl.getVideoMetadata(v, {cli, cliOptions}, ['url']);
+        // res.rewrite(new URL("/proxy", metadata.url));
+        const video = await axios.get(metadata.url, { responseType: 'stream'})
+        video.data.pipe(res);
     } catch (e) {
         console.error(e)
         res.status(500);
